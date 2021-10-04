@@ -26,4 +26,9 @@ public class APIController {
    public List<String> people() {
 	   return service.getPeople();
    }      
+   
+   @GetMapping("/people")
+   public List<Person> people2() {
+	   return service.getPeople2();
+   }  
 }
