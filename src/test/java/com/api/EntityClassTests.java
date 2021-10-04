@@ -6,10 +6,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.api.entity.Person;
 import com.api.test.utils.TestUtils;
 
+@SpringBootTest
 public class EntityClassTests {
 	
 	@Test
