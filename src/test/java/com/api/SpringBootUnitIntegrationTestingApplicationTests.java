@@ -1,5 +1,6 @@
 package com.api;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.api.controllers.APIController;
 
@@ -20,6 +22,8 @@ class SpringBootUnitIntegrationTestingApplicationTests {
 	
 	@Autowired
 	APIController controller2;
+	
+	Class<APIController> api=APIController.class;
 
 	@Test
 	@DisplayName("APIControlled class must be instantiated as singleon")
@@ -33,7 +37,7 @@ class SpringBootUnitIntegrationTestingApplicationTests {
 	@Test
 	@DisplayName("Asserting whether it is RestController and has root path specified")
 	public void decoratedCorrectly() {
-		Class api=APIController.class;
+		
 		Annotation []list =api.getAnnotations();
 		
 		assertEquals(list.length, 2);
@@ -42,5 +46,12 @@ class SpringBootUnitIntegrationTestingApplicationTests {
 	
 	}
 	 
+	@Test
+	@DisplayName("Asserting too path to be api")
+	public void checkUrlPattern() {
+		RequestMapping rm=api.getAnnotation(RequestMapping.class);
+		assertEquals(rm.value()[0],"/api");
+		assertThat(rm.value().length).isEqualTo(1);
+	}
      
 }
