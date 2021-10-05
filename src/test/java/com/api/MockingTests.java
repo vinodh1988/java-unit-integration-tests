@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.api.controllers.APIController;
 import com.api.entity.Person;
 import com.api.repository.PeopleRepository;
 import com.api.services.DataService;
@@ -32,6 +34,12 @@ public class MockingTests {
 	@Mock
 	PeopleRepository people;
 	
+	@InjectMocks
+	APIController controller;
+	
+	@Mock
+	DataService data2;
+	
 static	List<Person> mockData=new ArrayList<Person>();
 	
 	@BeforeAll
@@ -41,10 +49,12 @@ static	List<Person> mockData=new ArrayList<Person>();
 	}
 		
 	@Test
-	@DisplayName("Checking Service and Repo Integration")
+	@DisplayName("Checking Service,Contoller and Repo Integration")
 	public void testInstance() {
 		assertThat(data).isNotNull();
 		assertThat(people).isNotNull();
+		assertThat(controller).isNotNull();
+		assertThat(data2).isNotNull();
 	}
 	
 	
@@ -56,5 +66,16 @@ static	List<Person> mockData=new ArrayList<Person>();
 		assertThat(data.getPeople2().get(1).getName()).isEqualTo("Ravi");
 		verify(people,times(2)).findAll();
 		
+	}
+	
+	@Test
+	@DisplayName("Checking Controller and Service integration flow")
+	public void controlFlow()
+	{
+		when(data2.getPeople2()).thenReturn(mockData);
+		assertThat(controller.people2())
+		.hasSize(2)
+		.hasOnlyElementsOfType(Person.class);
+		 verify(data2,times(1)).getPeople2();
 	}
 }

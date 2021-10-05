@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.entity.Person;
 import com.api.repository.PeopleRepository;
+import com.api.utils.RecordAlreadyExistsException;
 
 @Service
 public class DataService implements IDataService {
@@ -30,5 +31,18 @@ public class DataService implements IDataService {
  	// TODO Auto-generated method stub
  	     return people.findAll();
      }
+
+	@Override
+	public void addPerson(Person person) throws RecordAlreadyExistsException {
+		// TODO Auto-generated method stub
+	        Person p=people.findBySno(person.getSno());
+	        if(p==null) {
+	        	people.save(person);
+	        }
+	        else
+	        	throw new RecordAlreadyExistsException(person.getSno());
+		
+	}
    
+    
 }
