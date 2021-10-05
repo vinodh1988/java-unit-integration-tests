@@ -61,7 +61,8 @@ static	List<Person> mockData=new ArrayList<Person>();
 	@Test
 	@DisplayName("Checking Service and Repo Integration Flow")
 	public void testFlow() {
-		doReturn(mockData).when(people).findAll();
+		//doReturn(mockData).when(people).findAll();
+		when(people.findAll()).thenReturn(mockData);
 		assertThat(data.getPeople2()).hasSize(2);
 		assertThat(data.getPeople2().get(1).getName()).isEqualTo("Ravi");
 		verify(people,times(2)).findAll();
