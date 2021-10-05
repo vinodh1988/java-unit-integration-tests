@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
 
@@ -40,6 +41,19 @@ public class ServiceWithExceptionTests {
 	public void testAvailaibility() throws RecordAlreadyExistsException {
 		 IDataService obj= spy(data);
 		 Person person=spy(one);
+		 Person person2=spy(two);
+		 System.out.println(person2+" "+two);
+		 
+		 doAnswer(i->{
+			Person p= (Person)i.getArgument(0);
+			System.out.println(p.getName());
+			if(p.getSno()<=0)
+				throw new Exception();
+			if(p.getSno()==1 || p.getSno()==2)
+				throw new RecordAlreadyExistsException(p.getSno());
+			
+			   return null;
+		 }).when(obj).addPerson(person2);
 		 
 		doThrow(new RecordAlreadyExistsException(person.getSno()))
 		.when(obj).addPerson(person);
@@ -50,6 +64,8 @@ public class ServiceWithExceptionTests {
 		 });
 		
 	     assertEquals(e.getMessage(),"The record with this key 1 already exists");
-	     assertDoesNotThrow(()->obj.addPerson(two));
+	     assertDoesNotThrow(()->obj.addPerson(person2));
+	     person2.setSno(1);
+	     assertThrows(RecordAlreadyExistsException.class, ()->obj.addPerson(person2));
 	}
 }
